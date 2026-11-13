@@ -1,0 +1,26 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Open email</title>
+<style>
+  html, body { height: 100%; margin: 0; background: #16141c; font: 600 17px -apple-system, system-ui, sans-serif }
+  body { display: grid; place-items: center }
+  a { color: #fff; background: #6d4aff; padding: 14px 22px; border-radius: 10px; text-decoration: none }
+</style>
+<a id="go" hidden>Open in Proton Mail</a>
+<script>
+  // #id=<Proton message id>&s=<subject>&f=<sender address>&t=<received, unix seconds>
+  // The part after # never leaves the device. iPhone: hand over to the Proton Mail app.
+  // Anywhere else: Proton web, searched down to that one email.
+  const p = new URLSearchParams(location.hash.slice(1));
+  const t = Number(p.get("t"));
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+    const go = document.getElementById("go");
+    go.href = "protonmail://messages/" + p.get("id") + "?subject=" + encodeURIComponent(p.get("s"));
+    go.hidden = false;
+    location.href = go.href;
+  } else {
+    location.replace("https://mail.proton.me/u/0/all-mail#from=" + encodeURIComponent(p.get("f")) + "&begin=" + (t - 60) + "&end=" + (t + 60));
+  }
+</script>
