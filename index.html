@@ -10,17 +10,16 @@
 </style>
 <a id="go" hidden>Open in Proton Mail</a>
 <script>
-  // #id=<Proton message id>&s=<subject>&f=<sender address>&t=<received, unix seconds>
+  // #id=<Proton message id>&s=<subject>
   // The part after # never leaves the device. iPhone: hand over to the Proton Mail app.
-  // Anywhere else: Proton web, searched down to that one email.
+  // Anywhere else: Proton web, which opens a bare message id only with "Conversation grouping" off.
   const p = new URLSearchParams(location.hash.slice(1));
-  const t = Number(p.get("t"));
   if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
     const go = document.getElementById("go");
     go.href = "protonmail://messages/" + p.get("id") + "?subject=" + encodeURIComponent(p.get("s"));
     go.hidden = false;
     location.href = go.href;
   } else {
-    location.replace("https://mail.proton.me/u/0/all-mail#from=" + encodeURIComponent(p.get("f")) + "&begin=" + (t - 60) + "&end=" + (t + 60));
+    location.replace("https://mail.proton.me/u/0/all-mail/" + p.get("id"));
   }
 </script>
